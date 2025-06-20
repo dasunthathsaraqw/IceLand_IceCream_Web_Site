@@ -14,7 +14,6 @@ function Dashboard() {
         setStats({
           products: products.data.length,
           promotions: promotions.data.filter(p => p.isActive).length,
-          inquiries: inquiries.data.length
         });
       } catch (err) {
         console.error('Error fetching stats');
