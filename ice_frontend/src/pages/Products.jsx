@@ -19,8 +19,8 @@ function Products() {
     const fetchData = async () => {
       try {
         const [productsRes, promotionsRes] = await Promise.all([
-          axios.get(`${process.env.REACT_APP_API_URL}/products`),
-          axios.get(`${process.env.REACT_APP_API_URL}/promotions`)
+          axios.get(`http://localhost:5000/api/products`),
+          axios.get(`http://localhost:5000/api/promotions`)
         ]);
         setProducts(productsRes.data);
         setPromotions(promotionsRes.data);
@@ -37,19 +37,19 @@ function Products() {
       const data = { ...formData, promotionId: formData.promotionId || null };
       if (formData.id) {
         await axios.put(
-          `${process.env.REACT_APP_API_URL}/products/${formData.id}`,
+          `http://localhost:5000/api/products/${formData.id}`,
           data,
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
       } else {
         await axios.post(
-          `${process.env.REACT_APP_API_URL}/products`,
+          `http://localhost:5000/api/products`,
           data,
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
       }
       setFormData({ id: '', name: '', price: '', description: '', image: '', category: 'Ice Cream', promotionId: '' });
-      const productsRes = await axios.get(`${process.env.REACT_APP_API_URL}/products`);
+      const productsRes = await axios.get(`http://localhost:5000/api/products`);
       setProducts(productsRes.data);
     } catch (err) {
       console.error('Error saving product');
@@ -71,7 +71,7 @@ function Products() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/products/${id}`,
+        `http://localhost:5000/api/products/${id}`,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       setProducts(products.filter(p => p._id !== id));

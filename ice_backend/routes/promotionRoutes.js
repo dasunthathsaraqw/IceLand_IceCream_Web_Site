@@ -1,5 +1,8 @@
 const express = require('express');
-const { getPromotions, createPromotion, updatePromotion, deletePromotion } = require('../controllers/promotionController');
+const { getPromotions,
+        createPromotion,
+        updatePromotion,
+        deletePromotion } = require('../controllers/promotionController');
 const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 

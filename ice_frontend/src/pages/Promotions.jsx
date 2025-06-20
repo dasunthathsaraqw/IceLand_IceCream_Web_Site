@@ -18,7 +18,7 @@ function Promotions() {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/promotions`);
+        const res = await axios.get(`http://localhost:5000/api/promotions`);
         setPromotions(res.data);
       } catch (err) {
         console.error('Error fetching promotions');
@@ -33,13 +33,13 @@ function Promotions() {
       const data = { ...formData, expires: new Date(formData.expires) };
       if (formData.id) {
         await axios.put(
-          `${process.env.REACT_APP_API_URL}/promotions/${formData.id}`,
+          `http://localhost:5000/api/promotions/${formData.id}`,
           data,
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
       } else {
         await axios.post(
-          `${process.env.REACT_APP_API_URL}/promotions`,
+          `http://localhost:5000/api/promotions`,
           data,
           { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
         );
@@ -54,7 +54,7 @@ function Promotions() {
         appliesTo: 'all',
         isActive: true
       });
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/promotions`);
+      const res = await axios.get(`http://localhost:5000/api/promotions`);
       setPromotions(res.data);
     } catch (err) {
       console.error('Error saving promotion');
@@ -77,7 +77,7 @@ function Promotions() {
   const handleDelete = async (id) => {
     try {
       await axios.delete(
-        `${process.env.REACT_APP_API_URL}/promotions/${id}`,
+        `http://localhost:5000/api/promotions/${id}`,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
       );
       setPromotions(promotions.filter(p => p._id !== id));

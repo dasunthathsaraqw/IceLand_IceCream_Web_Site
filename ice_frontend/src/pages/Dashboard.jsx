@@ -2,17 +2,14 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function Dashboard() {
-  const [stats, setStats] = useState({ products: 0, promotions: 0, inquiries: 0 });
+  const [stats, setStats] = useState({ products: 0, promotions: 0,});
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const [products, promotions, inquiries] = await Promise.all([
-          axios.get(`${process.env.REACT_APP_API_URL}/products`),
-          axios.get(`${process.env.REACT_APP_API_URL}/promotions`),
-          axios.get(`${process.env.REACT_APP_API_URL}/inquiries`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-          })
+          axios.get(`http://localhost:5000/api/products`),
+          axios.get(`http://localhost:5000/api/promotions`),
         ]);
         setStats({
           products: products.data.length,
@@ -37,10 +34,6 @@ function Dashboard() {
         <div className="bg-white p-4 rounded shadow">
           <h3 className="text-lg font-medium">Active Promotions</h3>
           <p className="text-2xl">{stats.promotions}</p>
-        </div>
-        <div className="bg-white p-4 rounded shadow">
-          <h3 className="text-lg font-medium">Inquiries</h3>
-          <p className="text-2xl">{stats.inquiries}</p>
         </div>
       </div>
     </div>

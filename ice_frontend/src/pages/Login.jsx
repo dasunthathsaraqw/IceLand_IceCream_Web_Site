@@ -14,7 +14,7 @@ function Login({ setAdmin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, formData);
+      const res = await axios.post(`http://localhost:5000/api/auth/login`, formData);
       localStorage.setItem('token', res.data.token);
       setAdmin(res.data.admin);
       navigate('/admin/dashboard');
