@@ -7,7 +7,7 @@ function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [products, promotions, inquiries] = await Promise.all([
+        const [products, promotions] = await Promise.all([
           axios.get(`http://localhost:5000/api/products`),
           axios.get(`http://localhost:5000/api/promotions`),
         ]);

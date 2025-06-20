@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import PromotionForm from '../component/PromotionForm';
+import PromotionForm from '../components/PromotionForm';
 
 function Promotions() {
   const [promotions, setPromotions] = useState([]);
