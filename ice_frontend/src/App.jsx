@@ -5,20 +5,26 @@ import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Promotions from './pages/Promotions';
 import { useState } from 'react';
+import UserNavbar from './components/UserNavbar';
+import Home from './pages/Home';
+import { CartProvider } from './context/CartContext';
 
 function App() {
   const [admin, setAdmin] = useState(null);
 
   return (
     <BrowserRouter>
-      {admin && <Navbar setAdmin={setAdmin} />}
-      <Routes>
-        <Route path="/admin/login" element={<Login setAdmin={setAdmin} />} />
-        <Route path="/admin/dashboard" element={admin ? <Dashboard /> : <Login setAdmin={setAdmin} />} />
-        <Route path="/admin/products" element={admin ? <Products /> : <Login setAdmin={setAdmin} />} />
-        <Route path="/admin/promotions" element={admin ? <Promotions /> : <Login setAdmin={setAdmin} />} />
-        <Route path="*" element={<Login setAdmin={setAdmin} />} />
-      </Routes>
+      <CartProvider>
+        {admin && <Navbar setAdmin={setAdmin} />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/admin/login" element={<Login setAdmin={setAdmin} />} />
+          <Route path="/admin/dashboard" element={admin ? <Dashboard /> : <Login setAdmin={setAdmin} />} />
+          <Route path="/admin/products" element={admin ? <Products /> : <Login setAdmin={setAdmin} />} />
+          <Route path="/admin/promotions" element={admin ? <Promotions /> : <Login setAdmin={setAdmin} />} />
+          <Route path="*" element={<Login setAdmin={setAdmin} />} />
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   );
 }
