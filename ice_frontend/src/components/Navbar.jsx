@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 
 function Navbar({ setAdmin }) {
@@ -14,6 +15,7 @@ function Navbar({ setAdmin }) {
           <Link to="/admin/dashboard" className="hover:underline">Dashboard</Link>
           <Link to="/admin/products" className="hover:underline">Products</Link>
           <Link to="/admin/promotions" className="hover:underline">Promotions</Link>
+          <Link to="/admin/inquiries" className="hover:underline">Inquiries</Link>
           <button onClick={logout} className="hover:underline">Logout</button>
         </div>
       </div>

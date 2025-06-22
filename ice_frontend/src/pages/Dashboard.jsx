@@ -2,21 +2,26 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function Dashboard() {
-  const [stats, setStats] = useState({ products: 0, promotions: 0,});
+  const [stats, setStats] = useState({ products: 0, promotions: 0, inquiries: 0 });
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [products, promotions] = await Promise.all([
+        const token = localStorage.getItem('token');
+        const [products, promotions, inquiries] = await Promise.all([
           axios.get(`http://localhost:5000/api/products`),
           axios.get(`http://localhost:5000/api/promotions`),
+          axios.get(`http://localhost:5000/api/inquiries`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
         ]);
         setStats({
           products: products.data.length,
           promotions: promotions.data.filter(p => p.isActive).length,
+          inquiries: inquiries.data.length
         });
       } catch (err) {
-        console.error('Error fetching stats');
+        console.error('Error fetching stats:', err);
       }
     };
     fetchStats();
@@ -33,6 +38,10 @@ function Dashboard() {
         <div className="bg-white p-4 rounded shadow">
           <h3 className="text-lg font-medium">Active Promotions</h3>
           <p className="text-2xl">{stats.promotions}</p>
+        </div>
+        <div className="bg-white p-4 rounded shadow">
+          <h3 className="text-lg font-medium">Inquiries</h3>
+          <p className="text-2xl">{stats.inquiries}</p>
         </div>
       </div>
     </div>

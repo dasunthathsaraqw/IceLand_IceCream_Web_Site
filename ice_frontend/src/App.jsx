@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Promotions from './pages/Promotions';
+import Inquiries from './pages/Inquiries';
 import { useState } from 'react';
 import UserNavbar from './components/UserNavbar';
 import Home from './pages/Home';
@@ -22,7 +23,7 @@ function App() {
           <Route path="/admin/dashboard" element={admin ? <Dashboard /> : <Login setAdmin={setAdmin} />} />
           <Route path="/admin/products" element={admin ? <Products /> : <Login setAdmin={setAdmin} />} />
           <Route path="/admin/promotions" element={admin ? <Promotions /> : <Login setAdmin={setAdmin} />} />
-          <Route path="*" element={<Login setAdmin={setAdmin} />} />
+          <Route path="/admin/inquiries" element={admin ? <Inquiries /> : <Login setAdmin={setAdmin} />} />          <Route path="*" element={<Login setAdmin={setAdmin} />} />
         </Routes>
       </CartProvider>
     </BrowserRouter>

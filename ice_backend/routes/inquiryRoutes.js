@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post('/', createInquiry);
 router.get('/', authMiddleware, getInquiries);
+router.delete('/:id', authMiddleware, deleteInquiry);
 
 module.exports = router;
