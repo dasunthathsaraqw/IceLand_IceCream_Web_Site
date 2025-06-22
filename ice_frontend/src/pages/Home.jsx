@@ -15,7 +15,7 @@ const Home = () => {
     const fetchPromotions = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/promotions');
-        const currentDate = new Date('2025-06-20T18:12:00+05:30'); // Updated to current time
+        const currentDate = new Date('2025-06-20T18:12:00+05:30');
         let promotionsData = response.data;
 
         if (Array.isArray(promotionsData)) {
@@ -63,17 +63,7 @@ const Home = () => {
   return (
     <div>
       <UserNavbar />
-      <section id="home" className="relative h-screen bg-cover bg-center" style={{ backgroundImage: "url('/ice-cream-hero.jpg')" }}>
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">Indulge in Creamy Bliss!</h1>
-            <p className="text-xl md:text-2xl mb-6">Discover our delicious ice creams and cones for every occasion.</p>
-            <a href="#products" className="bg-pink-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-pink-600 transition">
-              Explore Products
-            </a>
-          </div>
-        </div>
-      </section>
+      <Hero />
       <section id="promotions" className="py-12 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-center text-pink-600 mb-8">Special Promotions</h2>
