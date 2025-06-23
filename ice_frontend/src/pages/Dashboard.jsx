@@ -23,7 +23,6 @@ import {
   RefreshCw,
   TrendingUp,
   Calendar,
-  DollarSign,
   Activity,
   Eye,
   Filter,
@@ -36,7 +35,7 @@ function Dashboard() {
   const [reportData, setReportData] = useState({ type: '', data: [] });
   const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState('products');
+  const [activeTab, setActiveTab] = useState('">#products');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -138,7 +137,7 @@ function Dashboard() {
         columns = ['Name', 'Price', 'Category', 'Promotion', 'Description'];
         rows = data.map((item) => [
           item.name || 'N/A',
-          typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : 'N/A',
+          typeof item.price === 'number' ? `LKR ${item.price.toFixed(2)}` : 'N/A',
           item.category || 'N/A',
           item.promotionId && item.promotionId.offer && typeof item.promotionId.discount === 'number'
             ? `${item.promotionId.offer} (${item.promotionId.discount}%)`
@@ -152,7 +151,7 @@ function Dashboard() {
         rows = data.map((item) => [
           item.offer || 'N/A',
           typeof item.discount === 'number' ? `${item.discount}%` : 'N/A',
-          typeof item.minOrder === 'number' ? `${item.minOrder} gallons` : 'N/A',
+          typeof item.minOrder === 'number' ? `LKR ${item.minOrder.toFixed(2)}` : 'N/A',
           item.appliesTo || 'N/A',
           item.expires ? new Date(item.expires).toLocaleDateString('en-US') : 'N/A',
           item.isActive === true ? 'Active' : 'Inactive',
@@ -163,13 +162,13 @@ function Dashboard() {
           item.name || 'N/A',
           item.email || 'N/A',
           item.message ? item.message.substring(0, 50) + (item.message.length > 50 ? '...' : '') : 'N/A',
-          typeof item.totalAmount === 'number' ? `$${item.totalAmount.toFixed(2)}` : 'N/A',
+          typeof item.totalAmount === 'number' ? `LKR ${item.totalAmount.toFixed(2)}` : 'N/A',
           item.createdAt ? new Date(item.createdAt).toLocaleDateString('en-US') : 'N/A',
           Array.isArray(item.cartItems) && item.cartItems.length > 0
             ? item.cartItems
                 .map(
                   (cart) =>
-                    `${cart.name || 'N/A'} x${cart.quantity || 0} (${
+                    `${cart.name || 'N/A'} x${cart.quantity || 0} (LKR ${
                       typeof cart.total === 'number' ? cart.total.toFixed(2) : '0.00'
                     })`
                 )
@@ -216,7 +215,7 @@ function Dashboard() {
             labels: categories,
             datasets: [
               {
-                label: 'Total Price by Category ($)',
+                label: 'Total Price by Category (LKR)',
                 data: pricesByCategory,
                 backgroundColor: 'rgba(99, 102, 241, 0.8)',
                 borderColor: 'rgba(99, 102, 241, 1)',
@@ -290,7 +289,7 @@ function Dashboard() {
             labels: data.map((item) => item.name || 'Unknown'),
             datasets: [
               {
-                label: 'Total Amount ($)',
+                label: 'Total Amount (LKR)',
                 data: data.map((item) => (typeof item.totalAmount === 'number' ? item.totalAmount : 0)),
                 backgroundColor: 'rgba(168, 85, 247, 0.8)',
                 borderColor: 'rgba(168, 85, 247, 1)',
@@ -502,10 +501,10 @@ function Dashboard() {
                                   display: true,
                                   text:
                                     reportData.type === 'products'
-                                      ? 'Price ($)'
+                                      ? 'Price (LKR)'
                                       : reportData.type === 'promotions'
                                       ? 'Discount (%)'
-                                      : 'Total Amount ($)',
+                                      : 'Total Amount (LKR)',
                                   color: '#6B7280',
                                 },
                               },
@@ -568,7 +567,7 @@ function Dashboard() {
 
                 {/* Data Table */}
                 <div className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
-                 ℃<div className="flex items-center justify-between p-6 bg-white border-b border-gray-200">
+                  <div className="flex items-center justify-between p-6 bg-white border-b border-gray-200">
                     <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                       <Eye className="w-5 h-5 mr-2 text-indigo-600" />
                       Data Preview
@@ -629,7 +628,7 @@ function Dashboard() {
                                   </td>
                                   <td className="px-6 py-4 text-sm text-gray-600">
                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                      {typeof item.price === 'number' ? `$${item.price.toFixed(2)}` : 'N/A'}
+                                      {typeof item.price === 'number' ? `LKR ${item.price.toFixed(2)}` : 'N/A'}
                                     </span>
                                   </td>
                                   <td className="px-6 py-4 text-sm text-gray-600">
@@ -665,7 +664,9 @@ function Dashboard() {
                                     </span>
                                   </td>
                                   <td className="px-6 py-4 text-sm text-gray-600">
-                                    {typeof item.minOrder === 'number' ? `${item.minOrder} gallons` : 'N/A'}
+                                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                      {typeof item.minOrder === 'number' ? `LKR ${item.minOrder.toFixed(2)}` : 'N/A'}
+                                    </span>
                                   </td>
                                   <td className="px-6 py-4 text-sm text-gray-600">{item.appliesTo || 'N/A'}</td>
                                   <td className="px-6 py-4 text-sm text-gray-600">
@@ -698,9 +699,8 @@ function Dashboard() {
                                   </td>
                                   <td className="px-6 py-4 text-sm text-gray-600">
                                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                      <DollarSign className="w-3 h-3 mr-1" />
                                       {typeof item.totalAmount === 'number'
-                                        ? `$${item.totalAmount.toFixed(2)}`
+                                        ? `LKR ${item.totalAmount.toFixed(2)}`
                                         : 'N/A'}
                                     </span>
                                   </td>
@@ -717,7 +717,7 @@ function Dashboard() {
                                       ? item.cartItems
                                           .map(
                                             (cart) =>
-                                              `${cart.name || 'N/A'} x${cart.quantity || 0} (${
+                                              `${cart.name || 'N/A'} x${cart.quantity || 0} (LKR ${
                                                 typeof cart.total === 'number' ? cart.total.toFixed(2) : '0.00'
                                               })`
                                           )

@@ -216,7 +216,7 @@ function Inquiries() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredInquiries.map((inquiry, index) => (
+                  {filteredInquiries.map((inquiry) => (
                     <tr key={inquiry._id} className="hover:bg-gray-50 transition-colors duration-150">
                       <td className="px-6 py-4">
                         <div>
@@ -241,14 +241,14 @@ function Inquiries() {
                             <div key={itemIndex} className="mb-1">
                               <span className="font-medium">{item.name}</span>
                               <span className="text-gray-500"> × {item.quantity}</span>
-                              <span className="text-green-600 ml-2">${item.total.toFixed(2)}</span>
+                              <span className="text-green-600 ml-2">LKR {item.total.toFixed(2)}</span>
                             </div>
                           ))}
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="text-lg font-semibold text-green-600">
-                          ${inquiry.totalAmount.toFixed(2)}
+                          LKR {inquiry.totalAmount.toFixed(2)}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm text-gray-900">
@@ -326,7 +326,7 @@ function Inquiries() {
                 <div className="ml-4">
                   <div className="text-sm font-medium text-gray-500">Total Revenue</div>
                   <div className="text-2xl font-bold text-gray-900">
-                    ${inquiries.reduce((sum, inquiry) => sum + inquiry.totalAmount, 0).toFixed(2)}
+                    LKR {inquiries.reduce((sum, inquiry) => sum + inquiry.totalAmount, 0).toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -344,7 +344,7 @@ function Inquiries() {
                 <div className="ml-4">
                   <div className="text-sm font-medium text-gray-500">Average Order</div>
                   <div className="text-2xl font-bold text-gray-900">
-                    ${inquiries.length > 0 ? (inquiries.reduce((sum, inquiry) => sum + inquiry.totalAmount, 0) / inquiries.length).toFixed(2) : '0.00'}
+                    LKR {inquiries.length > 0 ? (inquiries.reduce((sum, inquiry) => sum + inquiry.totalAmount, 0) / inquiries.length).toFixed(2) : '0.00'}
                   </div>
                 </div>
               </div>

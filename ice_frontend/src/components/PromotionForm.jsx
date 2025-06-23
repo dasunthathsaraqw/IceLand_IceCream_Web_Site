@@ -6,9 +6,9 @@ function PromotionForm({ formData, setFormData, handleSubmit, onCancel, isEditin
 
   // Calculate minimum date (today)
   const today = new Date().toISOString().split('T')[0];
-  
+
   // Check if promotion is expiring soon
-  const isExpiringSoon = formData.expires && 
+  const isExpiringSoon = formData.expires &&
     new Date(formData.expires) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) &&
     new Date(formData.expires) >= new Date();
 
@@ -84,7 +84,7 @@ function PromotionForm({ formData, setFormData, handleSubmit, onCancel, isEditin
 
           <div className="space-y-1">
             <label htmlFor="minOrder" className="block text-sm font-medium text-gray-700">
-              Minimum Order <span className="text-red-500">*</span>
+              Minimum Order (LKR) <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -94,13 +94,13 @@ function PromotionForm({ formData, setFormData, handleSubmit, onCancel, isEditin
                 value={formData.minOrder}
                 onChange={handleChange}
                 min="0"
-                step="0.1"
-                className="w-full px-3 py-2 pr-16 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
-                placeholder="1"
+                step="0.01"
+                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                placeholder="1000"
                 required
               />
               <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <span className="text-gray-500 text-sm">gallons</span>
+                <span className="text-gray-500 text-sm">LKR</span>
               </div>
             </div>
           </div>
@@ -179,7 +179,7 @@ function PromotionForm({ formData, setFormData, handleSubmit, onCancel, isEditin
             <h4 className="text-sm font-medium text-gray-700 mb-2">Preview</h4>
             <div className="text-sm text-gray-600">
               <p><strong>{formData.offer}</strong></p>
-              <p>{formData.discount}% off • Min order: {formData.minOrder || '0'} gallons</p>
+              <p>{formData.discount}% off • Min order: LKR {formData.minOrder || '0'}</p>
               {formData.description && <p className="text-xs mt-1">{formData.description}</p>}
             </div>
           </div>
