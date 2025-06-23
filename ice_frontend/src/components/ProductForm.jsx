@@ -34,7 +34,7 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
 
           <div className="space-y-1">
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-              Price ($) <span className="text-red-500">*</span>
+              Price (LKR) <span className="text-red-500">*</span>
             </label>
             <input
               type="number"
