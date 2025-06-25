@@ -10,8 +10,8 @@ const upload = require('../middleware/upload');
 const router = express.Router();
 
 router.get('/', getProducts);
-router.post('/', authMiddleware, upload.single('image'), createProduct);
-router.put('/:id', authMiddleware, upload.single('image'), updateProduct);
+router.post('/', authMiddleware, upload.array('images', 5), createProduct);
+router.put('/:id', authMiddleware, upload.array('images', 5), updateProduct);
 router.delete('/:id', authMiddleware, deleteProduct);
 
 module.exports = router;

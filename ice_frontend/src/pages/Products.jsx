@@ -12,7 +12,7 @@ function Products() {
     name: '',
     price: '',
     description: '',
-    image: null, // Changed to null to handle file objects
+    images: [],
     category: 'Ice Cream',
     promotionId: '',
   });
@@ -51,9 +51,10 @@ function Products() {
         },
       };
 
+      let response;
       if (formData.id) {
         // Update product
-        await axios.put(
+        response = await axios.put(
           `http://localhost:5000/api/products/${formData.id}`,
           formDataToSend,
           config
@@ -61,7 +62,7 @@ function Products() {
         setSuccess('Product updated successfully!');
       } else {
         // Create product
-        await axios.post('http://localhost:5000/api/products', formDataToSend, config);
+        response = await axios.post('http://localhost:5000/api/products', formDataToSend, config);
         setSuccess('Product added successfully!');
       }
 
@@ -71,7 +72,7 @@ function Products() {
         name: '',
         price: '',
         description: '',
-        image: null,
+        images: [],
         category: 'Ice Cream',
         promotionId: '',
       });
@@ -87,7 +88,7 @@ function Products() {
         err.response?.data?.message || 'Failed to save product. Please try again.'
       );
       console.error('Error saving product:', err);
-      throw err; // Let ProductForm handle the error
+      throw err;
     }
   };
 
@@ -97,7 +98,7 @@ function Products() {
       name: product.name,
       price: product.price,
       description: product.description,
-      image: product.image, // Store existing image URL (string)
+      images: product.images || [],
       category: product.category,
       promotionId: product.promotionId?._id || '',
     });
@@ -132,7 +133,7 @@ function Products() {
       name: '',
       price: '',
       description: '',
-      image: null,
+      images: [],
       category: 'Ice Cream',
       promotionId: '',
     });
@@ -157,7 +158,6 @@ function Products() {
         <p className="text-gray-600">Add, edit, and manage your ice cream products</p>
       </div>
 
-      {/* Alert Messages */}
       {error && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           <div className="flex">
@@ -270,7 +270,7 @@ function Products() {
                         <div className="flex-shrink-0 h-10 w-10">
                           <img
                             className="h-10 w-10 rounded object-cover"
-                            src={product.image || '/placeholder-image.jpg'}
+                            src={product.images?.[0] || '/placeholder-image.jpg'}
                             alt={product.name}
                             onError={(e) => {
                               e.target.src =

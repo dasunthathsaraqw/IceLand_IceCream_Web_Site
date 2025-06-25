@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel, isEditing }) {
-  const [imagePreview, setImagePreview] = useState(formData.image || '');
+  const [imagePreviews, setImagePreviews] = useState(formData.images || []);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -11,21 +11,41 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
+    const files = Array.from(e.target.files);
+    if (files.length + imagePreviews.length > 5) {
+      setError('You can upload a maximum of 5 images');
+      return;
+    }
+
+    const validFiles = files.filter((file) => {
       if (!file.type.startsWith('image/')) {
-        setError('Please upload an image file');
-        return;
+        setError('Please upload only image files');
+        return false;
       }
       if (file.size > 10 * 1024 * 1024) {
-        setError('File size must be less than 10MB');
-        return;
+        setError('Each file must be less than 10MB');
+        return false;
       }
-      setError('');
-      setFormData({ ...formData, image: file });
-      const previewUrl = URL.createObjectURL(file);
-      setImagePreview(previewUrl);
-    }
+      return true;
+    });
+
+    if (validFiles.length === 0) return;
+
+    setError('');
+    const newFiles = [...(formData.images || []), ...validFiles].slice(0, 5);
+    setFormData({ ...formData, images: newFiles });
+
+    const previews = newFiles.map((file) =>
+      file instanceof File ? URL.createObjectURL(file) : file
+    );
+    setImagePreviews(previews);
+  };
+
+  const handleRemoveImage = (index) => {
+    const newImages = formData.images.filter((_, i) => i !== index);
+    const newPreviews = imagePreviews.filter((_, i) => i !== index);
+    setFormData({ ...formData, images: newImages });
+    setImagePreviews(newPreviews);
   };
 
   const handleFormSubmit = async (e) => {
@@ -38,11 +58,17 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
       formDataToSend.append('description', formData.description);
       formDataToSend.append('category', formData.category);
       formDataToSend.append('promotionId', formData.promotionId || '');
-      if (formData.image instanceof File) {
-        formDataToSend.append('image', formData.image);
-      }
+
+      formData.images?.forEach((image, index) => {
+        if (image instanceof File) {
+          formDataToSend.append('images', image);
+        } else {
+          formDataToSend.append(`existingImages[${index}]`, image);
+        }
+      });
 
       await handleSubmit(formDataToSend);
+      setImagePreviews([]);
     } catch (err) {
       setError('Error submitting form');
     } finally {
@@ -151,39 +177,51 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
           </div>
 
           <div className="space-y-1 md:col-span-2">
-            <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-              Product Image <span className="text-red-500">*</span>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-700">
+              Product Images (up to 5) <span className="text-red-500">*</span>
             </label>
             <input
               type="file"
-              id="image"
-              name="image"
+              id="images"
+              name="images"
               accept="image/*"
+              multiple
               onChange={handleFileChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
-              required={!isEditing}
+              required={!isEditing && !formData.images?.length}
             />
-            <p className="text-xs text-gray-500">Upload an image file (PNG, JPG, etc.)</p>
+            <p className="text-xs text-gray-500">Upload up to 5 image files (PNG, JPG, etc.)</p>
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
         </div>
 
-        {imagePreview && (
+        {imagePreviews.length > 0 && (
           <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-            <div className="text-center">
-              <img
-                src={imagePreview}
-                alt="Product preview"
-                className="h-20 md:h-40 w-full md:w-auto max-w-md object-contain mx-auto border border-gray-200 rounded-lg"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
-              <p className="text-sm text-gray-600 mt-2">
-                Image will be displayed at 40x40px in the product list
-              </p>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Image Previews</label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {imagePreviews.map((preview, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={preview}
+                    alt={`Product preview ${index + 1}`}
+                    className="h-20 md:h-40 w-full object-contain border border-gray-200 rounded-lg"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 text-xs hover:bg-red-700"
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
             </div>
+            <p className="text-sm text-gray-600 mt-2">
+              Images will be displayed at 40x40px in the product list
+            </p>
           </div>
         )}
 
