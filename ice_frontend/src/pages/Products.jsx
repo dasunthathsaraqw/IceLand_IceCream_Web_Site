@@ -12,9 +12,9 @@ function Products() {
     name: '',
     price: '',
     description: '',
-    image: '',
+    image: null, // Changed to null to handle file objects
     category: 'Ice Cream',
-    promotionId: ''
+    promotionId: '',
   });
   const [promotions, setPromotions] = useState([]);
 
@@ -23,15 +23,15 @@ function Products() {
       try {
         setLoading(true);
         const [productsRes, promotionsRes] = await Promise.all([
-          axios.get(`http://localhost:5000/api/products`),
-          axios.get(`http://localhost:5000/api/promotions`)
+          axios.get('http://localhost:5000/api/products'),
+          axios.get('http://localhost:5000/api/promotions'),
         ]);
         setProducts(productsRes.data);
         setPromotions(promotionsRes.data);
         setError('');
       } catch (err) {
         setError('Failed to fetch data. Please try again.');
-        console.error('Error fetching data');
+        console.error('Error fetching data:', err);
       } finally {
         setLoading(false);
       }
@@ -39,38 +39,55 @@ function Products() {
     fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (formDataToSend) => {
     setError('');
     setSuccess('');
-    
+
     try {
-      const data = { ...formData, promotionId: formData.promotionId || null };
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      };
+
       if (formData.id) {
+        // Update product
         await axios.put(
           `http://localhost:5000/api/products/${formData.id}`,
-          data,
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          formDataToSend,
+          config
         );
         setSuccess('Product updated successfully!');
       } else {
-        await axios.post(
-          `http://localhost:5000/api/products`,
-          data,
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-        );
+        // Create product
+        await axios.post('http://localhost:5000/api/products', formDataToSend, config);
         setSuccess('Product added successfully!');
       }
-      
-      setFormData({ id: '', name: '', price: '', description: '', image: '', category: 'Ice Cream', promotionId: '' });
-      const productsRes = await axios.get(`http://localhost:5000/api/products`);
+
+      // Reset form
+      setFormData({
+        id: '',
+        name: '',
+        price: '',
+        description: '',
+        image: null,
+        category: 'Ice Cream',
+        promotionId: '',
+      });
+
+      // Refresh product list
+      const productsRes = await axios.get('http://localhost:5000/api/products');
       setProducts(productsRes.data);
-      
+
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError('Failed to save product. Please try again.');
-      console.error('Error saving product');
+      setError(
+        err.response?.data?.message || 'Failed to save product. Please try again.'
+      );
+      console.error('Error saving product:', err);
+      throw err; // Let ProductForm handle the error
     }
   };
 
@@ -80,13 +97,13 @@ function Products() {
       name: product.name,
       price: product.price,
       description: product.description,
-      image: product.image,
+      image: product.image, // Store existing image URL (string)
       category: product.category,
-      promotionId: product.promotionId?._id || ''
+      promotionId: product.promotionId?._id || '',
     });
     setError('');
     setSuccess('');
-    
+
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -95,23 +112,30 @@ function Products() {
     if (!window.confirm(`Are you sure you want to delete "${productName}"?`)) {
       return;
     }
-    
+
     try {
-      await axios.delete(
-        `http://localhost:5000/api/products/${id}`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
-      );
-      setProducts(products.filter(p => p._id !== id));
+      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+      setProducts(products.filter((p) => p._id !== id));
       setSuccess('Product deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError('Failed to delete product. Please try again.');
-      console.error('Error deleting product');
+      console.error('Error deleting product:', err);
     }
   };
 
   const handleCancelEdit = () => {
-    setFormData({ id: '', name: '', price: '', description: '', image: '', category: 'Ice Cream', promotionId: '' });
+    setFormData({
+      id: '',
+      name: '',
+      price: '',
+      description: '',
+      image: null,
+      category: 'Ice Cream',
+      promotionId: '',
+    });
     setError('');
     setSuccess('');
   };
@@ -138,8 +162,16 @@ function Products() {
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -153,8 +185,16 @@ function Products() {
         <div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-green-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -175,52 +215,83 @@ function Products() {
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Products ({products.length})</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Products ({products.length})
+          </h3>
         </div>
-        
+
         {products.length === 0 ? (
           <div className="px-6 py-8 text-center">
-            <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-              <path d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A9.971 9.971 0 0124 24c4.21 0 7.813 2.602 9.288 6.286" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 48 48"
+            >
+              <path
+                d="M34 40h10v-4a6 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971 0 00-.712-3.714M14 40H4v-4a6 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A9.971 9.971 0 0124 24c4.21 0 7.813 2.602 9.288 6.286"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">No products</h3>
-            <p className="mt-1 text-sm text-gray-500">Get started by adding your first product.</p>
+            <p className="mt-1 text-sm text-gray-500">
+              Get started by adding your first product.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Promotion</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Product
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Price
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Promotion
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {products.map(product => (
+                {products.map((product) => (
                   <tr key={product._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <img 
-                            className="h-10 w-10 rounded object-cover" 
-                            src={product.image || '/placeholder-image.jpg'} 
+                          <img
+                            className="h-10 w-10 rounded object-cover"
+                            src={product.image || '/placeholder-image.jpg'}
                             alt={product.name}
                             onError={(e) => {
-                              e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA4MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkwyNCAxNk0xNiAyMEwyNCAxNU0xNiAyNEwyNCAyNCIgc3Ryb2tlPSIjOUI5QkEwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K';
+                              e.target.src =
+                                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA4MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkwyNCAxNk0xNiAyMEwyNCAxNU0xNiAyNEwyNCAyNCIgc3Ryb2tlPSIjOUI5QkEwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K';
                             }}
                           />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {product.name}
+                          </div>
+                          <div className="text-sm text-gray-500 truncate max-w-xs">
+                            {product.description}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">LKR {product.price}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        LKR {product.price}
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">

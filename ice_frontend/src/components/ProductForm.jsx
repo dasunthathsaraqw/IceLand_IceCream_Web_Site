@@ -1,6 +1,53 @@
+import { useState } from 'react';
+
 function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel, isEditing }) {
+  const [imagePreview, setImagePreview] = useState(formData.image || '');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setError('Please upload an image file');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setError('File size must be less than 10MB');
+        return;
+      }
+      setError('');
+      setFormData({ ...formData, image: file });
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('price', formData.price);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('category', formData.category);
+      formDataToSend.append('promotionId', formData.promotionId || '');
+      if (formData.image instanceof File) {
+        formDataToSend.append('image', formData.image);
+      }
+
+      await handleSubmit(formDataToSend);
+    } catch (err) {
+      setError('Error submitting form');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -14,7 +61,7 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6">
+      <form onSubmit={handleFormSubmit} className="p-6" encType="multipart/form-data">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-1">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -78,8 +125,10 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
             >
               <option value="">No promotion</option>
-              {promotions.map(p => (
-                <option key={p._id} value={p._id}>{p.offer}</option>
+              {promotions.map((p) => (
+                <option key={p._id} value={p._id}>
+                  {p.offer}
+                </option>
               ))}
             </select>
           </div>
@@ -103,38 +152,37 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
 
           <div className="space-y-1 md:col-span-2">
             <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-              Image URL <span className="text-red-500">*</span>
+              Product Image <span className="text-red-500">*</span>
             </label>
             <input
-              type="url"
+              type="file"
               id="image"
               name="image"
-              value={formData.image}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
-              placeholder="https://example.com/image.jpg"
-              required
+              accept="image/*"
+              onChange={handleFileChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+              required={!isEditing}
             />
-            <p className="text-xs text-gray-500">Enter a valid URL for the product image</p>
+            <p className="text-xs text-gray-500">Upload an image file (PNG, JPG, etc.)</p>
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
         </div>
 
-        {/* Image Preview */}
-        {formData.image && (
+        {imagePreview && (
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">Preview</label>
-            <div className="flex items-center space-x-4">
+            <div className="text-center">
               <img
-                src={formData.image}
+                src={imagePreview}
                 alt="Product preview"
-                className="h-20 w-20 object-cover rounded-lg border border-gray-200"
+                className="h-20 md:h-40 w-full md:w-auto max-w-md object-contain mx-auto border border-gray-200 rounded-lg"
                 onError={(e) => {
                   e.target.style.display = 'none';
                 }}
               />
-              <div className="text-sm text-gray-600">
-                <p>Image will be displayed at 40x40px in the product list</p>
-              </div>
+              <p className="text-sm text-gray-600 mt-2">
+                Image will be displayed at 40x40px in the product list
+              </p>
             </div>
           </div>
         )}
@@ -151,9 +199,10 @@ function ProductForm({ formData, setFormData, handleSubmit, promotions, onCancel
           )}
           <button
             type="submit"
-            className="px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+            disabled={isLoading}
+            className={`px-6 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {isEditing ? 'Update Product' : 'Add Product'}
+            {isLoading ? 'Uploading...' : isEditing ? 'Update Product' : 'Add Product'}
           </button>
         </div>
       </form>
