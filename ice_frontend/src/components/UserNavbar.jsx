@@ -11,7 +11,7 @@ const UserNavbar = () => {
   const cartCount = cart ? cart.length : 0;
 
   return (
-    <nav className="fixed top-0 w-full bg-white shadow-md z-10">
+    <nav className="fixed top-0 w-full z-50 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -19,20 +19,20 @@ const UserNavbar = () => {
               to="home"
               smooth={true}
               duration={500}
-              className="text-xl font-bold text-pink-600 cursor-pointer"
+              className="text-2xl font-bold text-[#FF9149] cursor-pointer font-poppins"
             >
-              IceCream Delight
+              IceLand
             </Link>
           </div>
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex items-center space-x-10">
             <Link
               to="promotions"
               smooth={true}
               duration={500}
               spy={true}
-              activeClass="text-pink-600"
+              activeClass="text-[#FF9149] border-b-2 border-[#FF9149]"
               offset={-70}
-              className="text-gray-700 hover:text-pink-600 cursor-pointer"
+              className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-base transition-colors duration-300"
             >
               Promotions
             </Link>
@@ -41,9 +41,9 @@ const UserNavbar = () => {
               smooth={true}
               duration={500}
               spy={true}
-              activeClass="text-pink-600"
+              activeClass="text-[#FF9149] border-b-2 border-[#FF9149]"
               offset={-70}
-              className="text-gray-700 hover:text-pink-600 cursor-pointer"
+              className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-base transition-colors duration-300"
             >
               Products
             </Link>
@@ -52,9 +52,9 @@ const UserNavbar = () => {
               smooth={true}
               duration={500}
               spy={true}
-              activeClass="text-pink-600"
+              activeClass="text-[#FF9149] border-b-2 border-[#FF9149]"
               offset={-70}
-              className="text-gray-700 hover:text-pink-600 cursor-pointer"
+              className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-base transition-colors duration-300"
             >
               About
             </Link>
@@ -63,29 +63,46 @@ const UserNavbar = () => {
               smooth={true}
               duration={500}
               spy={true}
-              activeClass="text-pink-600"
+              activeClass="text-[#FF9149] border-b-2 border-[#FF9149]"
               offset={-70}
-              className="text-gray-700 hover:text-pink-600 cursor-pointer"
+              className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-base transition-colors duration-300"
             >
               Contact Us
             </Link>
           </div>
           <div className="flex items-center">
-            <a
-              href="#"
-              onClick={(e) => { e.preventDefault(); setIsCartOpen(true); }}
-              className="text-gray-700 hover:text-pink-600 relative"
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="text-[#60B5FF] hover:text-[#FF9149] relative p-2 rounded-lg hover:bg-[#AFDDFF]/20 transition-all duration-300 group"
+              title="View Cart"
             >
-              Cart
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {cartCount}
-              </span>
-            </a>
+              {/* Shopping Cart Icon */}
+              <svg 
+                className="w-6 h-6 transform group-hover:scale-110 transition-transform duration-200" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5H21M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" 
+                />
+              </svg>
+              
+              {/* Cart Count Badge */}
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#FF9149] to-[#FF9149]/90 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform duration-200 animate-pulse">
+                  {cartCount > 99 ? '99+' : cartCount}
+                </span>
+              )}
+            </button>
           </div>
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-700 hover:text-pink-600 focus:outline-none"
+              className="text-[#60B5FF] hover:text-[#FF9149] focus:outline-none transition-colors duration-300 p-2"
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -94,14 +111,14 @@ const UserNavbar = () => {
           </div>
         </div>
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white shadow-md">
-            <div className="flex flex-col space-y-2 p-4">
+          <div className="md:hidden bg-gradient-to-br from-[#FFECDB] to-[#AFDDFF]/30 shadow-lg rounded-b-xl backdrop-blur-sm">
+            <div className="flex flex-col space-y-4 p-6">
               <Link
                 to="home"
                 smooth={true}
                 duration={500}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-pink-600 cursor-pointer"
+                className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50"
               >
                 Home
               </Link>
@@ -110,7 +127,7 @@ const UserNavbar = () => {
                 smooth={true}
                 duration={500}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-pink-600 cursor-pointer"
+                className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50"
               >
                 Promotions
               </Link>
@@ -119,7 +136,7 @@ const UserNavbar = () => {
                 smooth={true}
                 duration={500}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-pink-600 cursor-pointer"
+                className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50"
               >
                 Products
               </Link>
@@ -128,7 +145,7 @@ const UserNavbar = () => {
                 smooth={true}
                 duration={500}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-pink-600 cursor-pointer"
+                className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50"
               >
                 About
               </Link>
@@ -137,10 +154,24 @@ const UserNavbar = () => {
                 smooth={true}
                 duration={500}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-pink-600 cursor-pointer"
+                className="text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50"
               >
                 Contact Us
               </Link>
+              
+              {/* Mobile Cart Button */}
+              <button
+                onClick={() => {
+                  setIsCartOpen(true);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center space-x-2 text-[#60B5FF] hover:text-[#FF9149] cursor-pointer font-poppins font-medium text-lg transition-colors duration-300 px-3 py-2 rounded-lg hover:bg-white/50 border-t border-[#AFDDFF] mt-2 pt-4"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5H21M9 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM20.5 19.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                </svg>
+                <span>Cart ({cartCount})</span>
+              </button>
             </div>
           </div>
         )}
