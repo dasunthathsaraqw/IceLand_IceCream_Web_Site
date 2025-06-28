@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const InquiryForm = () => {
   const [visibleSections, setVisibleSections] = useState([]);
@@ -68,11 +68,10 @@ const InquiryForm = () => {
     <section 
       id="contact" 
       ref={sectionRef}
-      className="py-12 bg-gradient-to-br from-[#FFECDB] via-[#FFECDB] to-[#AFDDFF]/30 relative overflow-hidden min-h-screen"
+      className="py-12 bg-white relative overflow-hidden z-0"
     >
-      
       <BackgroundCircles />
-      <div className="container mx-auto px-4 md:px-8 relative z-10">
+      <div className="container mx-auto px-4 md:px-8 relative z-1">
         <div 
           ref={headerRef}
           className={`text-center mb-10 transform transition-all duration-1000 ${
@@ -85,7 +84,6 @@ const InquiryForm = () => {
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-[#60B5FF] to-[#FF9149] mx-auto mb-6 rounded-full"></div>
           </div>
-          
         </div>
 
         <div 
@@ -94,14 +92,14 @@ const InquiryForm = () => {
             visibleSections.includes('form') ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
           }`}
         >
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+          <div className="bg-[#FFECDB] p-6 rounded-lg shadow-sm border border-[#FF9149]">
             <div className="flex items-center mb-5">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-orange-500 rounded-full flex items-center justify-center mr-3">
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-8 h-8 bg-[#FF9149] rounded-full flex items-center justify-center mr-3">
+                <svg className="w-4 h-4 text-[#FFFFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <h2 className="text-lg font-medium text-gray-800">Send Inquiry</h2>
+              <h2 className="text-lg font-medium text-[#FF9149]">Send Inquiry</h2>
             </div>
 
             <div className="space-y-4">
@@ -114,16 +112,14 @@ const InquiryForm = () => {
                   onChange={handleInputChange}
                   onFocus={() => setFocusedField('name')}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full p-3 bg-gray-50 rounded-md text-sm text-gray-700 border transition-all duration-200 focus:outline-none ${
-                    focusedField === 'name' 
-                      ? 'border-blue-400 bg-white shadow-sm' 
-                      : 'border-gray-200 hover:border-gray-300'
+                  className={`w-full p-3 bg-white rounded-md text-sm text-gray-700 border border-[#FF9149] transition-all duration-200 focus:outline-none focus:border-[#E07B39] ${
+                    focusedField === 'name' ? 'shadow-sm' : 'hover:border-[#E07B39]'
                   }`}
                   required
                 />
                 {focusedField === 'name' && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#FF9149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
@@ -139,16 +135,14 @@ const InquiryForm = () => {
                   onChange={handleInputChange}
                   onFocus={() => setFocusedField('email')}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full p-3 bg-gray-50 rounded-md text-sm text-gray-700 border transition-all duration-200 focus:outline-none ${
-                    focusedField === 'email' 
-                      ? 'border-blue-400 bg-white shadow-sm' 
-                      : 'border-gray-200 hover:border-gray-300'
+                  className={`w-full p-3 bg-white rounded-md text-sm text-gray-700 border border-[#FF9149] transition-all duration-200 focus:outline-none focus:border-[#E07B39] ${
+                    focusedField === 'email' ? 'shadow-sm' : 'hover:border-[#E07B39]'
                   }`}
                   required
                 />
                 {focusedField === 'email' && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#FF9149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 3.26a2 2 0 001.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -164,16 +158,14 @@ const InquiryForm = () => {
                   onFocus={() => setFocusedField('message')}
                   onBlur={() => setFocusedField(null)}
                   rows={4}
-                  className={`w-full p-3 bg-gray-50 rounded-md text-sm text-gray-700 border transition-all duration-200 focus:outline-none resize-none ${
-                    focusedField === 'message' 
-                      ? 'border-blue-400 bg-white shadow-sm' 
-                      : 'border-gray-200 hover:border-gray-300'
+                  className={`w-full p-3 bg-white rounded-md text-sm text-gray-700 border border-[#FF9149] transition-all duration-200 focus:outline-none focus:border-[#E07B39] resize-none ${
+                    focusedField === 'message' ? 'shadow-sm' : 'hover:border-[#E07B39]'
                   }`}
                   required
                 />
                 {focusedField === 'message' && (
                   <div className="absolute right-3 top-3">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-[#FF9149]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
@@ -183,20 +175,20 @@ const InquiryForm = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="group w-full bg-gradient-to-r from-blue-500 to-orange-500 text-white px-6 py-3 rounded-md hover:shadow-md transition-all duration-200 font-medium text-sm flex items-center justify-center"
+                className="group w-full bg-[#FF9149] text-[#FFFFFF] px-6 py-3 rounded-md hover:bg-[#E07B39] transition-all duration-200 font-medium text-sm flex items-center justify-center shadow-sm hover:shadow-md"
                 disabled={status === 'sending'}
               >
                 {status === 'sending' ? (
                   <span className="flex items-center justify-center space-x-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 4 7.938l3-2.647z"/>
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="#FFFFFF" strokeWidth="4" fill="none"/>
+                      <path className="opacity-75" fill="#FFFFFF" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 4 7.938l3-2.647z"/>
                     </svg>
                     <span>Sending...</span>
                   </span>
                 ) : (
                   <>
-                    <svg className="w-4 h-4 mr-2 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 mr-2 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="#FFFFFF" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
                     <span>Send Inquiry</span>
@@ -205,19 +197,14 @@ const InquiryForm = () => {
               </button>
 
               {status === 'success' && (
-                <p className="text-green-600 mt-3 text-center text-sm">Inquiry sent successfully!</p>
+                <p className="text-[#16A34A] mt-3 text-center text-sm">✅ Inquiry sent successfully!</p>
               )}
               {status === 'error' && (
-                <p className="text-red-600 mt-3 text-center text-sm">Failed to send inquiry. Please try again.</p>
+                <p className="text-[#E07B39] mt-3 text-center text-sm">❌ Failed to send inquiry. Please try again.</p>
               )}
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-1/4 bg-gradient-to-b from-blue-50/20 to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-full h-1/4 bg-gradient-to-t from-orange-50/15 to-transparent"></div>
       </div>
     </section>
   );
