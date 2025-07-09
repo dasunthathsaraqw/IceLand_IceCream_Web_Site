@@ -5,7 +5,7 @@ import Products from './pages/Products';
 import Promotions from './pages/Promotions';
 import Inquiries from './pages/Inquiries';
 import { useState } from 'react';
-import UserNavbar from './components/UserNavbar';
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import { CartProvider } from './context/CartContext';
 
