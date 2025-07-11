@@ -15,7 +15,8 @@ function Promotions() {
     minOrder: '',
     expires: '',
     appliesTo: 'all',
-    isActive: true
+    isActive: true,
+    image: ''
   });
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function Promotions() {
         setError('');
       } catch (err) {
         setError('Failed to fetch promotions. Please try again.');
-        console.error('Error fetching promotions');
+        console.error('Error fetching promotions:', err);
       } finally {
         setLoading(false);
       }
@@ -35,28 +36,35 @@ function Promotions() {
     fetchPromotions();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (formDataToSend) => {
     setError('');
     setSuccess('');
-    
+
     try {
-      const data = { ...formData, expires: new Date(formData.expires) };
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      };
+
+      let response;
       if (formData.id) {
-        await axios.put(
+        response = await axios.put(
           `http://localhost:5000/api/promotions/${formData.id}`,
-          data,
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          formDataToSend,
+          config
         );
         setSuccess('Promotion updated successfully!');
       } else {
-        await axios.post(
+        response = await axios.post(
           `http://localhost:5000/api/promotions`,
-          data,
-          { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } }
+          formDataToSend,
+          config
         );
         setSuccess('Promotion added successfully!');
       }
+
       setFormData({
         id: '',
         offer: '',
@@ -65,14 +73,19 @@ function Promotions() {
         minOrder: '',
         expires: '',
         appliesTo: 'all',
-        isActive: true
+        isActive: true,
+        image: ''
       });
+
       const res = await axios.get(`http://localhost:5000/api/promotions`);
       setPromotions(res.data);
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError('Failed to save promotion. Please try again.');
-      console.error('Error saving promotion');
+      setError(
+        err.response?.data?.message || 'Failed to save promotion. Please try again.'
+      );
+      console.error('Error saving promotion:', err);
+      throw err;
     }
   };
 
@@ -85,7 +98,8 @@ function Promotions() {
       minOrder: promotion.minOrder,
       expires: new Date(promotion.expires).toISOString().split('T')[0],
       appliesTo: promotion.appliesTo,
-      isActive: promotion.isActive
+      isActive: promotion.isActive,
+      image: promotion.image || ''
     });
     setError('');
     setSuccess('');
@@ -106,7 +120,7 @@ function Promotions() {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       setError('Failed to delete promotion. Please try again.');
-      console.error('Error deleting promotion');
+      console.error('Error deleting promotion:', err);
     }
   };
 
@@ -119,7 +133,8 @@ function Promotions() {
       minOrder: '',
       expires: '',
       appliesTo: 'all',
-      isActive: true
+      isActive: true,
+      image: ''
     });
     setError('');
     setSuccess('');
@@ -142,7 +157,6 @@ function Promotions() {
         <p className="text-gray-600">Add, edit, and manage your promotional offers</p>
       </div>
 
-      {/* Alert Messages */}
       {error && (
         <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           <div className="flex">
@@ -212,8 +226,23 @@ function Promotions() {
                 {promotions.map(promo => (
                   <tr key={promo._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{promo.offer}</div>
-                      <div className="text-sm text-gray-500 truncate max-w-xs">{promo.description}</div>
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <img
+                            className="h-10 w-10 rounded object-cover"
+                            src={promo.image || '/placeholder-image.jpg'}
+                            alt={promo.offer}
+                            onError={(e) => {
+                              e.target.src =
+                                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA4MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkwyNCAxNk0xNiAyMEwyNCAxNU0xNiAyNEwyNCAyNCIgc3Ryb2tlPSIjOUI5QkEwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K';
+                            }}
+                          />
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{promo.offer}</div>
+                          <div className="text-sm text-gray-500 truncate max-w-xs">{promo.description}</div>
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{promo.discount}%</div>
